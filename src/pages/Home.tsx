@@ -73,40 +73,35 @@ const Home: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Blank</IonTitle>
+          <IonTitle>Carros</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Blank</IonTitle>
-          </IonToolbar>
-        </IonHeader>
         <div className='car'>
           <div>
             <IonItem>
-              <IonInput label="Id Carro" id='carId' disabled></IonInput>
+              <IonInput label="Id Carro" id='carId' disabled labelPlacement='stacked'></IonInput>
             </IonItem>
             <IonItem>
-              <IonInput label='renavam' id='reindeer'></IonInput>
+              <IonInput label='renavam' id='reindeer' labelPlacement='stacked' required placeholder="Digite o renavam do carro"></IonInput>
             </IonItem>
             <IonItem>
-              <IonInput label='placa' id='plate'></IonInput>
+              <IonInput label='placa' id='plate' labelPlacement='stacked' required placeholder="Digite a placa do carro"></IonInput>
             </IonItem>
             <IonItem>
-              <IonInput label='modelo' id='model'></IonInput>
+              <IonInput label='modelo' id='model' labelPlacement='stacked' required placeholder="Digite o modelo do carro"></IonInput>
             </IonItem>
             <IonItem>
-              <IonInput label='ano' id='year'></IonInput>
+              <IonInput label='ano' id='year' labelPlacement='stacked' required placeholder="Digite o ano do carro"></IonInput>
             </IonItem>
             <IonItem>
-              <IonInput label='Quilometragem' id='kilometer'></IonInput>
+              <IonInput label='Quilometragem' id='kilometer' labelPlacement='stacked' required placeholder="Digite a quilometragem do carro"></IonInput>
             </IonItem>
             <IonItem>
-              <IonInput label='Data de registro' id='registration_date'></IonInput>
+              <IonInput label='Data de registro' id='registration_date' labelPlacement='stacked' required type='date'></IonInput>
             </IonItem>
             <IonItem>
-              <IonInput label='Status' id='status'></IonInput>
+              <IonInput label='Status' id='status' labelPlacement='stacked' required placeholder="Digite o status do carro"></IonInput>
             </IonItem>
           </div>
           <div className='buttons'>
