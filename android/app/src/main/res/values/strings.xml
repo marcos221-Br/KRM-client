@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">krm-client</string>
+    <string name="title_activity_main">krm-client</string>
+    <string name="package_name">krm.client</string>
+    <string name="custom_url_scheme">krm.client</string>
+</resources>
