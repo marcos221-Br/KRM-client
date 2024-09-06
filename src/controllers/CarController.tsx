@@ -7,7 +7,7 @@ export class CarController{
         
     }
 
-    public findCar(plate:string){
+    public findCar(plate:String){
         return sendJson('/car/' + plate,'GET');
     }
 
