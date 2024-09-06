@@ -1,6 +1,6 @@
 export class Car{
     private carId:Number;
-    private reindeer:String;
+    private renavam:String;
     private plate:String;
     private model:String;
     private year:Number;
@@ -10,7 +10,7 @@ export class Car{
 
     public constructor(){
         this.carId = 0;
-        this.reindeer = '';
+        this.renavam = '';
         this.plate = '';
         this.model = '';
         this.year = 0;
@@ -27,12 +27,12 @@ export class Car{
         return this.carId;
     }
 
-    public setReindeer(reindeer:String){
-        this.reindeer = reindeer;
+    public setRenavam(reindeer:String){
+        this.renavam = reindeer;
     }
 
-    public getReindeer(){
-        return this.reindeer;
+    public getRenavam(){
+        return this.renavam;
     }
 
     public setPlate(plate:String){

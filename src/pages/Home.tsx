@@ -12,7 +12,7 @@ function findCar(){
     carController.findCar(plate).then(function(response){
       if(response.carId !== undefined){
         (document.getElementById('carId') as HTMLInputElement).value = response.carId;
-        (document.getElementById('reindeer') as HTMLInputElement).value = response.reindeer;
+        (document.getElementById('renavam') as HTMLInputElement).value = response.reindeer;
         (document.getElementById('model') as HTMLInputElement).value = response.model;
         (document.getElementById('year') as HTMLInputElement).value = response.year;
         (document.getElementById('kilometer') as HTMLInputElement).value = response.kilometer;
@@ -26,7 +26,7 @@ function findCar(){
 }
 
 function createCar(){
-  car.setReindeer((document.getElementById('reindeer') as HTMLInputElement).value);
+  car.setRenavam((document.getElementById('renavam') as HTMLInputElement).value);
   car.setPlate((document.getElementById('plate') as HTMLInputElement).value);
   car.setModel((document.getElementById('model') as HTMLInputElement).value);
   car.setYear(parseInt((document.getElementById('year') as HTMLInputElement).value));
@@ -40,7 +40,7 @@ function createCar(){
 
 function updateCar(){
   car.setCarId(parseInt((document.getElementById('carId') as HTMLInputElement).value));
-  car.setReindeer((document.getElementById('reindeer') as HTMLInputElement).value);
+  car.setRenavam((document.getElementById('renavam') as HTMLInputElement).value);
   car.setPlate((document.getElementById('plate') as HTMLInputElement).value);
   car.setModel((document.getElementById('model') as HTMLInputElement).value);
   car.setYear(parseInt((document.getElementById('year') as HTMLInputElement).value));
@@ -59,7 +59,7 @@ function deleteCar(){
 
 function clearInputs(){
   (document.getElementById('carId') as HTMLInputElement).value = '';
-  (document.getElementById('reindeer') as HTMLInputElement).value = '';
+  (document.getElementById('renavam') as HTMLInputElement).value = '';
   (document.getElementById('plate') as HTMLInputElement).value = '';
   (document.getElementById('model') as HTMLInputElement).value = '';
   (document.getElementById('year') as HTMLInputElement).value = '';
@@ -83,16 +83,16 @@ const Home: React.FC = () => {
               <IonInput label="Id Carro" id='carId' disabled labelPlacement='stacked'></IonInput>
             </IonItem>
             <IonItem>
-              <IonInput label='renavam' id='reindeer' labelPlacement='stacked' required placeholder="Digite o renavam do carro"></IonInput>
+              <IonInput label='Renavam' id='renavam' labelPlacement='stacked' required placeholder="Digite o renavam do carro"></IonInput>
             </IonItem>
             <IonItem>
-              <IonInput label='placa' id='plate' labelPlacement='stacked' required placeholder="Digite a placa do carro"></IonInput>
+              <IonInput label='Placa' id='plate' labelPlacement='stacked' required placeholder="Digite a placa do carro"></IonInput>
             </IonItem>
             <IonItem>
-              <IonInput label='modelo' id='model' labelPlacement='stacked' required placeholder="Digite o modelo do carro"></IonInput>
+              <IonInput label='Modelo' id='model' labelPlacement='stacked' required placeholder="Digite o modelo do carro"></IonInput>
             </IonItem>
             <IonItem>
-              <IonInput label='ano' id='year' labelPlacement='stacked' required placeholder="Digite o ano do carro"></IonInput>
+              <IonInput label='Ano' id='year' labelPlacement='stacked' required placeholder="Digite o ano do carro" type='number'></IonInput>
             </IonItem>
             <IonItem>
               <IonInput label='Quilometragem' id='kilometer' labelPlacement='stacked' required placeholder="Digite a quilometragem do carro"></IonInput>

@@ -12,7 +12,7 @@ export class CarController{
     }
 
     public createCar(car:Car){
-        let json = JSON.stringify({ reindeer: car.getReindeer(), plate: car.getPlate(), model: car.getModel(), year: car.getYear(), kilometer: car.getKilometer(),
+        let json = JSON.stringify({ renavam: car.getRenavam(), plate: car.getPlate(), model: car.getModel(), year: car.getYear(), kilometer: car.getKilometer(),
                                     registration_date: car.getRegistrationDate(), status: car.getStatus() });
         return sendJson('/car','POST',json);
     }
