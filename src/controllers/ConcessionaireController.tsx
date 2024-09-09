@@ -7,6 +7,10 @@ export class ConcessionaireController{
 
     }
 
+    public findAllConcessionaires(){
+        return sendJson('/concessionaire','GET');
+    }
+
     public findConcessionaire(concessionaireId:Number){
         return sendJson('/concessionaire/' + concessionaireId,'GET');
     }

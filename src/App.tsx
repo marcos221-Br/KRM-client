@@ -4,6 +4,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import HomePage from './pages/Home';
 import CarPage from './pages/Car';
 import ConcessionairePage from './pages/Concessionaire';
+import TollPage from './pages/Toll';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -55,6 +56,9 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/concessionaire">
           <ConcessionairePage />
+        </Route>
+        <Route exact path="/toll">
+          <TollPage />
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>

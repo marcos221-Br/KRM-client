@@ -13,6 +13,8 @@ const HomePage: React.FC = () => {
                     <a href="/car">CRUD Carros</a>
                     <br />
                     <a href="/concessionaire">CRUD Concessionárias</a>
+                    <br />
+                    <a href="/toll">CRUD Praças</a>
                 </div>
             </IonContent>
         </IonPage>
