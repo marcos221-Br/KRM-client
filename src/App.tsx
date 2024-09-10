@@ -48,18 +48,10 @@ const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonRouterOutlet>
-        <Route exact path="/car">
-          <CarPage />
-        </Route>
-        <Route exact path="/">
-          <HomePage />
-        </Route>
-        <Route exact path="/concessionaire">
-          <ConcessionairePage />
-        </Route>
-        <Route exact path="/toll">
-          <TollPage />
-        </Route>
+        <Route path="/" component={HomePage} />
+        <Route path="/car" component={CarPage} />
+        <Route path="/concessionaire" component={ConcessionairePage} />
+        <Route path="/toll" component={TollPage} />
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>

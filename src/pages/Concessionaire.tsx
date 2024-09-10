@@ -1,64 +1,97 @@
-import { IonButton, IonContent, IonHeader, IonInput, IonItem, IonPage, IonTitle, IonToolbar } from "@ionic/react"
+import { IonButton, IonContent, IonHeader, IonInput, IonItem, IonList, IonPage, IonTitle, IonToolbar } from "@ionic/react"
 import './Concessionaire.css'
 import { ConcessionaireController } from "../controllers/ConcessionaireController";
 import { Concessionaire } from "../models/Concessionaire";
+import pencil from '../images/pencil-line.svg';
+import trashCan from '../images/delete-bin-5-line.svg';
 
 var concessionaireController = new ConcessionaireController();
 var concessionaire = new Concessionaire();
 
-function findConcessionaire(){
-    let concessionaireId = (document.getElementById('concessionaireId') as HTMLInputElement).value;
-    if(concessionaireId != ''){
-        concessionaireController.findConcessionaire(parseInt(concessionaireId)).then(function(response){
-            if(response.id !== undefined){
-                (document.getElementById('id') as HTMLInputElement).value = response.id;
-                (document.getElementById('concessionaireId') as HTMLInputElement).value = response.concessionaireId;
-                (document.getElementById('concessionaireName') as HTMLInputElement).value = response.concessionaireName;
-            }else{
-                alert('Concessionária com código ' + concessionaireId + ' não encontrada!');
+function findAllConcessionaires(){
+    concessionaireController.findAllConcessionaires().then(function(response){
+        let list = (document.getElementById('concessionaireList') as HTMLIonListElement);
+        if(response.length > 0){
+            for (let i = 0; i < response.length; i++) {
+                let concessionaireId = document.createElement('ion-label');
+                let concessionaireName = document.createElement('ion-label');
+                concessionaireId.innerHTML = response[i].concessionaireId;
+                concessionaireId.setAttribute('id',response[i].concessionaireId);
+                concessionaireName.innerHTML = response[i].concessionaireName;
+                concessionaireName.setAttribute('id',response[i].concessionaireName);
+                let editIcon = document.createElement('ion-icon');
+                let editButton = document.createElement('ion-button');
+                editIcon.setAttribute('icon',pencil);
+                editButton.setAttribute('id',response[i].concessionaireId);
+                editButton.appendChild(editIcon);
+                editButton.addEventListener('click',findConcessionaire);
+                let deleteIcon = document.createElement('ion-icon');
+                let deleteButton = document.createElement('ion-button');
+                deleteIcon.setAttribute('icon',trashCan);
+                deleteButton.setAttribute('id',response[i].concessionaireId);
+                deleteButton.appendChild(deleteIcon);
+                deleteButton.addEventListener('click',deleteConcessionaire);
+                let ionItem = document.createElement('ion-item');
+                ionItem.appendChild(concessionaireId);
+                ionItem.appendChild(concessionaireName);
+                ionItem.appendChild(editButton);
+                ionItem.appendChild(deleteButton);
+                if(i == 0){
+                    list.replaceChildren(ionItem);
+                }else{
+                    list.appendChild(ionItem);
+                }
             }
-        })
-    }else{
-        alert('Necessário fornecer um código de concessionária para realizar a busca!');
-    }
-}
-
-function createConcessionaire(){
-    concessionaire.setConcessionaireId(parseInt((document.getElementById('concessionaireId') as HTMLInputElement).value));
-    concessionaire.setConcessionaireName((document.getElementById('concessionaireName') as HTMLInputElement).value);
-    concessionaireController.findConcessionaire(concessionaire.getConcessionaireId()).then(function(response){
-        if(response.id === undefined){
-            concessionaireController.createConcessionaire(concessionaire).then(function(response){
-                (document.getElementById('id') as HTMLInputElement).value = response.id;
-                alert('Concessionária com código ' + response.concessionaireId + ' adicionada com sucesso!');
-            }).catch(error => alert('Necessário preencher todos os campos para realizar o cadastro!'));
         }else{
-            alert('A concecionária com código ' + concessionaire.getConcessionaireId + ' já se encontra cadastrada!');
+            list.innerHTML = '';
         }
     })
 }
 
-function updateConcessionaire(){
-    concessionaire.setId(parseInt((document.getElementById('id') as HTMLInputElement).value));
-    concessionaire.setConcessionaireId(parseInt((document.getElementById('concessionaireId') as HTMLInputElement).value));
-    concessionaire.setConcessionaireName((document.getElementById('concessionaireName') as HTMLInputElement).value);
-    concessionaireController.updateConcessionaire(concessionaire).then(function(response){
-        alert('Concessionária de código ' + response.concessionaireId + ' atualizada com sucesso!');
-    }).catch(error => alert('Necessário estar com todos os campos preenchidos para realizar a atualização!'));
+function findConcessionaire(value:any){
+    concessionaireController.findConcessionaire(parseInt(value.target.id)).then(function(response){
+        (document.getElementById('id') as HTMLInputElement).value = response.id;
+        (document.getElementById('concessionaireId') as HTMLInputElement).value = response.concessionaireId;
+        (document.getElementById('concessionaireName') as HTMLInputElement).value = response.concessionaireName;
+    });
 }
 
-function deleteConcessionaire(){
-    let concessionaireId = parseInt((document.getElementById('concessionaireId') as HTMLInputElement).value);
+function saveConcessionaire(){
+    let id = (document.getElementById('id') as HTMLInputElement).value;
+    concessionaire.setConcessionaireId(parseInt((document.getElementById('concessionaireId') as HTMLInputElement).value));
+    concessionaire.setConcessionaireName((document.getElementById('concessionaireName') as HTMLInputElement).value);
+    if(id == ''){
+        concessionaireController.findConcessionaire(concessionaire.getConcessionaireId()).then(function(response){
+            if(response.id === undefined){
+                concessionaireController.createConcessionaire(concessionaire).then(function(response){
+                    (document.getElementById('id') as HTMLInputElement).value = response.id;
+                    clearInputs();
+                    findAllConcessionaires();
+                    alert('Concessionária com código ' + response.concessionaireId + ' adicionada com sucesso!');
+                }).catch(error => alert('Necessário preencher todos os campos para realizar o cadastro!'));
+            }else{
+                alert('A concecionária com código ' + concessionaire.getConcessionaireId() + ' já se encontra cadastrada!');
+            }
+        })
+    }else{
+        concessionaire.setId(parseInt(id));
+        concessionaireController.updateConcessionaire(concessionaire).then(function(response){
+            clearInputs();
+            findAllConcessionaires();
+            alert('Concessionária de código ' + response.concessionaireId + ' atualizada com sucesso!');
+        }).catch(error => alert('Necessário estar com todos os campos preenchidos para realizar a atualização!'));
+    }
+}
+
+function deleteConcessionaire(value:any){
+    let concessionaireId = value.target.id;
     concessionaireController.findConcessionaire(concessionaireId).then(function(response){
-        if(response.id !== undefined){
-            concessionaire.setId(response.id);
-            concessionaireController.deleteConcessionaire(concessionaire).then(function(){
-                clearInputs();
-                alert('Concessionária ' + concessionaireId + ' excluida com sucesso!');
-            })
-        }else{
-            alert('A concessionária com código ' + concessionaireId + ' não foi encontrada no banco!');
-        }
+        concessionaire.setId(response.id);
+        concessionaireController.deleteConcessionaire(concessionaire).then(function(){
+            clearInputs();
+            findAllConcessionaires();
+            alert('Concessionária ' + concessionaireId + ' excluida com sucesso!');
+        })
     })
 }
 
@@ -69,6 +102,7 @@ function clearInputs(){
 }
 
 const ConcessionairePage: React.FC = () => {
+    findAllConcessionaires();
     return (
         <IonPage>
             <IonHeader>
@@ -92,12 +126,10 @@ const ConcessionairePage: React.FC = () => {
                     </div>
                     <br />
                     <div className='buttons'>
-                        <IonButton size='default' onClick={findConcessionaire}>Procurar</IonButton>
-                        <IonButton size='default' onClick={createConcessionaire}>Cadastrar</IonButton>
-                        <IonButton size='default' onClick={updateConcessionaire}>Atualizar</IonButton>
-                        <IonButton size='default' onClick={deleteConcessionaire}>Apagar</IonButton>
-                        <IonButton size='default' onClick={clearInputs}>Apagar entradas</IonButton>
+                        <IonButton size='default' onClick={saveConcessionaire}>Salvar</IonButton>
                     </div>
+                    <br />
+                    <IonList id='concessionaireList'></IonList>
                 </div>
             </IonContent>
         </IonPage>

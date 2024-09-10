@@ -25,4 +25,8 @@ export class CarController{
     public deleteCar(car:Car){
         return sendJson('/car/' + car.getCarId(),'DELETE');
     }
+
+    public findAllCars(){
+        return sendJson('/car','GET');
+    }
 }
