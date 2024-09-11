@@ -7,6 +7,10 @@ export class TollController{
 
     }
 
+    public findAllTolls(){
+        return sendJson('/toll','GET');
+    }
+
     public findToll(tollId:Number){
         return sendJson('/toll/' + tollId,'GET');
     }
