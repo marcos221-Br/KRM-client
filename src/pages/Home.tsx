@@ -16,6 +16,8 @@ const HomePage: React.FC = () => {
                     <br />
                     <a href='/toll'>CRUD Praças</a>
                     <br />
+                    <a href='/country'>CRUD Países</a>
+                    <br />
                 </div>
             </IonContent>
         </IonPage>
