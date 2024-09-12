@@ -157,7 +157,7 @@ const TollPage: React.FC = () => {
                         <IonItem>
                             <IonLabel id="label">
                                 <IonSelect label="Concessionária" id="concessionaire" placeholder="Selecione a concessionária" onClick={findConcessionaires}></IonSelect>
-                                <a href="/concessionaire">Adicionar nova concessionária?</a>
+                                <a href="/concessionaire">Nova concessionária +</a>
                             </IonLabel>
                         </IonItem>
                         <IonItem>
