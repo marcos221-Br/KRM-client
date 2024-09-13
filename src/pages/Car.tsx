@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonHeader, IonInput, IonItem, IonList, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonList, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import './Car.css';
 import { CarController } from '../controllers/CarController';
 import { Car } from '../models/Car';
@@ -84,7 +84,7 @@ function saveCar(){
           clearInputs();
           findAllCars();
           alert(response.model + ' com placa ' + response.plate + ' cadastrado com sucesso!');
-        }).catch(error => alert('Necessário preencher todos os campos para realizar o cadastro!'));
+        }).catch(error => alert('Sem acesso ao sistema'));
       }else{
         alert('Carro com placa' + car.getPlate() + ' cadastrado anteriormente!');
       }
@@ -95,9 +95,8 @@ function saveCar(){
       clearInputs();
       findAllCars();
       alert(response.model + ' com placa ' + response.plate + ' foi atualizado com sucesso!');
-    }).catch(error => alert('Necessário estar com todos os campos preenchidos para realizar a atualização!'));
+    }).catch(error => alert('Sem acesso ao sistema'));
   }
-  
 }
 
 function deleteCar(value:any){
@@ -128,6 +127,9 @@ const CarPage: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
+          <IonButtons slot='start'>
+            <IonBackButton defaultHref='/'></IonBackButton>
+          </IonButtons>
           <IonTitle>Carros</IonTitle>
         </IonToolbar>
       </IonHeader>
@@ -135,34 +137,36 @@ const CarPage: React.FC = () => {
         <div className='car'>
           <div>
             <h1>Cadastro de carros</h1>
-            <IonItem>
-              <IonInput label="Id Carro" id='carId' disabled labelPlacement='floating'></IonInput>
-            </IonItem>
-            <IonItem>
-              <IonInput label='Renavam' id='renavam' labelPlacement='floating' placeholder="Digite o renavam do carro" type='number'></IonInput>
-            </IonItem>
-            <IonItem>
-              <IonInput label='Placa' id='plate' labelPlacement='floating' placeholder="Digite a placa do carro"></IonInput>
-            </IonItem>
-            <IonItem>
-              <IonInput label='Modelo' id='model' labelPlacement='floating' placeholder="Digite o modelo do carro"></IonInput>
-            </IonItem>
-            <IonItem>
-              <IonInput label='Ano' id='year' labelPlacement='floating' placeholder="Digite o ano do carro" type='number'></IonInput>
-            </IonItem>
-            <IonItem>
-              <IonInput label='Quilometragem' id='kilometer' labelPlacement='floating' placeholder="Digite a quilometragem do carro" type='number'></IonInput>
-            </IonItem>
-            <IonItem>
-              <IonInput label='Data de registro' id='registration_date' labelPlacement='floating' type='date'></IonInput>
-            </IonItem>
-            <IonItem>
-              <IonInput label='Status' id='status' labelPlacement='floating' placeholder="Digite o status do carro"></IonInput>
-            </IonItem>
-          </div>
-          <br />
-          <div className='buttons'>
-            <IonButton size='default' onClick={saveCar}>Salvar</IonButton>
+            <form onSubmit={saveCar}>
+              <IonItem>
+                <IonInput label="Id Carro" id='carId' disabled labelPlacement='floating'></IonInput>
+              </IonItem>
+              <IonItem>
+                <IonInput label='Renavam' id='renavam' labelPlacement='floating' placeholder="Digite o renavam do carro" maxlength={11} required></IonInput>
+              </IonItem>
+              <IonItem>
+                <IonInput label='Placa' id='plate' labelPlacement='floating' placeholder="Digite a placa do carro" required maxlength={8}></IonInput>
+              </IonItem>
+              <IonItem>
+                <IonInput label='Modelo' id='model' labelPlacement='floating' placeholder="Digite o modelo do carro" required></IonInput>
+              </IonItem>
+              <IonItem>
+                <IonInput label='Ano' id='year' labelPlacement='floating' placeholder="Digite o ano do carro" type='number' required min={0}></IonInput>
+              </IonItem>
+              <IonItem>
+                <IonInput label='Quilometragem' id='kilometer' labelPlacement='floating' placeholder="Digite a quilometragem do carro" type='number' required min={0}></IonInput>
+              </IonItem>
+              <IonItem>
+                <IonInput label='Data de registro' id='registration_date' labelPlacement='floating' type='date' required></IonInput>
+              </IonItem>
+              <IonItem>
+                <IonInput label='Status' id='status' labelPlacement='floating' placeholder="Digite o status do carro" required></IonInput>
+              </IonItem>
+              <br />
+              <div className='buttons'>
+                <IonButton size='default' type="submit">Salvar</IonButton>
+              </div>
+            </form>
           </div>
           <br />
           <IonList id='carList'></IonList>

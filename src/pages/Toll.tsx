@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonList, IonPage, IonSelect, IonTitle, IonToggle, IonToolbar } from "@ionic/react"
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonList, IonPage, IonSelect, IonTitle, IonToggle, IonToolbar } from "@ionic/react"
 import './Toll.css'
 import { ConcessionaireController } from "../controllers/ConcessionaireController";
 import { Toll } from "../models/Toll";
@@ -86,34 +86,37 @@ function findToll(value:any){
 }
 
 function saveToll(){
-    let id = (document.getElementById('id') as HTMLInputElement).value;
-    toll.setConcessionaire(parseInt((document.getElementById('concessionaire') as HTMLIonSelectElement).value));
-    toll.setEmptyCharge((document.getElementById('emptyCharge') as HTMLIonToggleElement).checked);
-    toll.setPrice(parseFloat((document.getElementById('price') as HTMLInputElement).value));
-    toll.setTollId(parseInt((document.getElementById('tollId') as HTMLInputElement).value));
-    toll.setTollName((document.getElementById('tollName') as HTMLInputElement).value);
-    if(id == ''){
-        tollController.findToll(toll.getTollId()).then(function(response){
-            if(response.id === undefined){
-                tollController.createToll(toll).then(function(response){
-                    (document.getElementById('id') as HTMLInputElement).value = response.id;
-                    findAllTolls();
-                    clearInputs();
-                    alert(response.tollName + ' com código ' + response.tollId + ' cadastrada com sucesso!');
-                }).catch(error => alert('Necessário estar com todos os campos preenchidos para realizar o cadastro da praça!'));
-            }else{
-                alert('Praça de código ' + response.id + ' já se encontra cadastrada!');
-            }
-        })
+    if((document.getElementById('concessionaire') as HTMLIonSelectElement).value !== undefined){
+        let id = (document.getElementById('id') as HTMLInputElement).value;
+        toll.setConcessionaire(parseInt((document.getElementById('concessionaire') as HTMLIonSelectElement).value));
+        toll.setEmptyCharge((document.getElementById('emptyCharge') as HTMLIonToggleElement).checked);
+        toll.setPrice(parseFloat((document.getElementById('price') as HTMLInputElement).value));
+        toll.setTollId(parseInt((document.getElementById('tollId') as HTMLInputElement).value));
+        toll.setTollName((document.getElementById('tollName') as HTMLInputElement).value);
+        if(id == ''){
+            tollController.findToll(toll.getTollId()).then(function(response){
+                if(response.id === undefined){
+                    tollController.createToll(toll).then(function(response){
+                        (document.getElementById('id') as HTMLInputElement).value = response.id;
+                        findAllTolls();
+                        clearInputs();
+                        alert(response.tollName + ' com código ' + response.tollId + ' cadastrada com sucesso!');
+                    }).catch(error => alert('Sem acesso ao sistema'));
+                }else{
+                    alert('Praça de código ' + response.id + ' já se encontra cadastrada!');
+                }
+            })
+        }else{
+            toll.setId(parseInt(id));
+            tollController.updateToll(toll).then(function(response){
+                findAllTolls();
+                clearInputs();
+                alert('Praça de nome ' + response.tollName + ' com código ' + response.tollId + ' atualizada com sucesso!');
+            }).catch(error => alert('Sem acesso ao sistema'));
+        }
     }else{
-        toll.setId(parseInt(id));
-        tollController.updateToll(toll).then(function(response){
-            findAllTolls();
-            clearInputs();
-            alert('Praça de nome ' + response.tollName + ' com código ' + response.tollId + ' atualizada com sucesso!');
-        }).catch(error => alert('Necessáiro estar com todos os campos preenchidos para realizar a atualização!'));
+        alert("Necessário fornecer uma concessionária!");
     }
-    
 }
 
 function deleteToll(value:any){
@@ -144,6 +147,9 @@ const TollPage: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
+                    <IonButtons slot='start'>
+                        <IonBackButton defaultHref='/'></IonBackButton>
+                    </IonButtons>
                     <IonTitle>Praças</IonTitle>
                 </IonToolbar>
             </IonHeader>
@@ -151,31 +157,33 @@ const TollPage: React.FC = () => {
                 <div className="toll">
                     <div>
                         <h1>Cadastro de praças</h1>
-                        <IonItem>
-                            <IonInput label="Id praça" id="id" disabled labelPlacement="floating"></IonInput>
-                        </IonItem>
-                        <IonItem>
-                            <IonLabel id="label">
-                                <IonSelect label="Concessionária" id="concessionaire" placeholder="Selecione a concessionária" onClick={findConcessionaires}></IonSelect>
-                                <a href="/concessionaire">Nova concessionária +</a>
-                            </IonLabel>
-                        </IonItem>
-                        <IonItem>
-                            <IonInput label="Cód. Praça" id="tollId" labelPlacement="floating" placeholder="Digite o código da praça" type="number"></IonInput>
-                        </IonItem>
-                        <IonItem>
-                            <IonInput label="Nome Praça" id="tollName" labelPlacement="floating" placeholder="Digite o nome da praça"></IonInput>
-                        </IonItem>
-                        <IonItem>
-                            <IonInput label="Preço" id="price" labelPlacement="floating" placeholder="Digite o valor da praça" type="number"></IonInput>
-                        </IonItem>
-                        <IonItem>
-                            <IonToggle id="emptyCharge">Cobra Vazio</IonToggle>
-                        </IonItem>
-                    </div>
-                    <br />
-                    <div className="buttons">
-                        <IonButton size="default" onClick={saveToll}>Salvar</IonButton>
+                        <form onSubmit={saveToll}>
+                            <IonItem>
+                                <IonInput label="Id praça" id="id" disabled labelPlacement="floating"></IonInput>
+                            </IonItem>
+                            <IonItem>
+                                <IonLabel id="label">
+                                    <IonSelect label="Concessionária" id="concessionaire" placeholder="Selecione a concessionária" onClick={findConcessionaires} interface="popover"></IonSelect>
+                                    <a href="/concessionaire">Nova concessionária +</a>
+                                </IonLabel>
+                            </IonItem>
+                            <IonItem>
+                                <IonInput label="Cód. Praça" id="tollId" labelPlacement="floating" placeholder="Digite o código da praça" type="number" required min={0}></IonInput>
+                            </IonItem>
+                            <IonItem>
+                                <IonInput label="Nome Praça" id="tollName" labelPlacement="floating" placeholder="Digite o nome da praça" required></IonInput>
+                            </IonItem>
+                            <IonItem>
+                                <IonInput label="Preço" id="price" labelPlacement="floating" placeholder="Digite o valor da praça" type="number" step="0.01" required min={0}></IonInput>
+                            </IonItem>
+                            <IonItem>
+                                <IonToggle id="emptyCharge">Cobra Vazio</IonToggle>
+                            </IonItem>
+                            <br />
+                            <div className="buttons">
+                                <IonButton size="default" type="submit">Salvar</IonButton>
+                            </div>
+                        </form>
                     </div>
                     <br />
                     <IonList id="tollList"></IonList>

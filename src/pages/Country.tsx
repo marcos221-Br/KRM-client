@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonHeader, IonInput, IonItem, IonList, IonPage, IonTitle, IonToolbar } from "@ionic/react"
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonList, IonPage, IonTitle, IonToolbar } from "@ionic/react"
 import './Country.css'
 import { Country } from "../models/Country";
 import { CountryController } from "../controllers/CountryController";
@@ -69,14 +69,14 @@ function saveCountry(){
             }else{
                 alert(response.countryName + ' cadastrado anteriormente!');
             }
-        }).catch(error => alert('Necessário preencher todos os campos para cadastrar o país!'));
+        }).catch(error => alert('Sem acesso ao sistema'));
     }else{
         country.setId(parseInt(id));
         countryController.updateCountry(country).then(function(response){
             clearInputs();
             findAllCountries();
             alert(response.countryName + ' cadastrado com sucesso!');
-        }).catch(error => alert('Necessário estar com todos os campos preenchidos para realizar a atualização!'));
+        }).catch(error => alert('Sem acesso ao sistema'));
     }
 }
 
@@ -101,6 +101,9 @@ const CountryPage: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
+                    <IonButtons slot='start'>
+                        <IonBackButton defaultHref='/'></IonBackButton>
+                    </IonButtons>
                     <IonTitle>Países</IonTitle>
                 </IonToolbar>
             </IonHeader>
@@ -108,16 +111,18 @@ const CountryPage: React.FC = () => {
                 <div className="country">
                     <div>
                         <h1>Cadastro de países</h1>
-                        <IonItem>
-                            <IonInput label="Id País" id="id" disabled labelPlacement="floating"></IonInput>
-                        </IonItem>
-                        <IonItem>
-                            <IonInput label="Nome País" id="countryName" labelPlacement="floating" placeholder="Digite o nome do país"></IonInput>
-                        </IonItem>
-                    </div>
-                    <br />
-                    <div className="buttons">
-                        <IonButton size="default" onClick={saveCountry}>Salvar</IonButton>
+                        <form onSubmit={saveCountry}>
+                            <IonItem>
+                                <IonInput label="Id País" id="id" disabled labelPlacement="floating"></IonInput>
+                            </IonItem>
+                            <IonItem>
+                                <IonInput label="Nome País" id="countryName" labelPlacement="floating" placeholder="Digite o nome do país" required></IonInput>
+                            </IonItem>
+                            <br />
+                            <div className="buttons">
+                                <IonButton size="default" type="submit">Salvar</IonButton>
+                            </div>
+                        </form>
                     </div>
                     <br />
                     <IonList id="countryList"></IonList>

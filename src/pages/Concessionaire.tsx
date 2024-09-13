@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonHeader, IonInput, IonItem, IonList, IonPage, IonTitle, IonToolbar } from "@ionic/react"
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonList, IonPage, IonTitle, IonToolbar } from "@ionic/react"
 import './Concessionaire.css'
 import { ConcessionaireController } from "../controllers/ConcessionaireController";
 import { Concessionaire } from "../models/Concessionaire";
@@ -68,7 +68,7 @@ function saveConcessionaire(){
                     clearInputs();
                     findAllConcessionaires();
                     alert('Concessionária com código ' + response.concessionaireId + ' adicionada com sucesso!');
-                }).catch(error => alert('Necessário preencher todos os campos para realizar o cadastro!'));
+                }).catch(error => alert('Sem acesso ao sistema'));
             }else{
                 alert('A concecionária com código ' + concessionaire.getConcessionaireId() + ' já se encontra cadastrada!');
             }
@@ -79,7 +79,7 @@ function saveConcessionaire(){
             clearInputs();
             findAllConcessionaires();
             alert('Concessionária de código ' + response.concessionaireId + ' atualizada com sucesso!');
-        }).catch(error => alert('Necessário estar com todos os campos preenchidos para realizar a atualização!'));
+        }).catch(error => alert('Sem acesso ao sistema'));
     }
 }
 
@@ -107,6 +107,9 @@ const ConcessionairePage: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
+                    <IonButtons slot='start'>
+                        <IonBackButton defaultHref='/'></IonBackButton>
+                    </IonButtons>
                     <IonTitle>Concessionárias</IonTitle>
                 </IonToolbar>
             </IonHeader>
@@ -114,19 +117,21 @@ const ConcessionairePage: React.FC = () => {
                 <div className="concessionaire">
                     <div>
                         <h1>Cadastro de concessionárias</h1>
-                        <IonItem>
-                            <IonInput label="Id Concesionária" id="id" disabled labelPlacement="floating"></IonInput>
-                        </IonItem>
-                        <IonItem>
-                            <IonInput label='Cód. Concessionária' id='concessionaireId' labelPlacement='floating' placeholder="Digite o código da concessionária" type="number"></IonInput>
-                        </IonItem>
-                        <IonItem>
-                            <IonInput label="Nome Concessionária" id="concessionaireName" labelPlacement="floating" placeholder="Digite o nome da conessionária"></IonInput>
-                        </IonItem>
-                    </div>
-                    <br />
-                    <div className='buttons'>
-                        <IonButton size='default' onClick={saveConcessionaire}>Salvar</IonButton>
+                        <form onSubmit={saveConcessionaire}>
+                            <IonItem>
+                                <IonInput label="Id Concesionária" id="id" disabled labelPlacement="floating"></IonInput>
+                            </IonItem>
+                            <IonItem>
+                                <IonInput label='Cód. Concessionária' id='concessionaireId' labelPlacement='floating' placeholder="Digite o código da concessionária" type="number" required min={0}></IonInput>
+                            </IonItem>
+                            <IonItem>
+                                <IonInput label="Nome Concessionária" id="concessionaireName" labelPlacement="floating" placeholder="Digite o nome da conessionária" required></IonInput>
+                            </IonItem>
+                            <br />
+                            <div className='buttons'>
+                                <IonButton size='default' type="submit">Salvar</IonButton>
+                            </div>
+                        </form>
                     </div>
                     <br />
                     <IonList id='concessionaireList'></IonList>
