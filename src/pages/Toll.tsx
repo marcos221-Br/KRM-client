@@ -5,6 +5,7 @@ import { Toll } from "../models/Toll";
 import { TollController } from "../controllers/TollController";
 import pencil from '../images/pencil-line.svg';
 import trashCan from '../images/delete-bin-5-line.svg';
+import { useForm } from "react-hook-form";
 
 var concessionaireController = new ConcessionaireController();
 var tollController = new TollController();
@@ -142,6 +143,7 @@ function clearInputs(){
 }
 
 const TollPage: React.FC = () => {
+    var { handleSubmit } = useForm();
     findAllTolls();
     return (
         <IonPage>
@@ -157,7 +159,7 @@ const TollPage: React.FC = () => {
                 <div className="toll">
                     <div>
                         <h1>Cadastro de praças</h1>
-                        <form onSubmit={saveToll}>
+                        <form onSubmit={handleSubmit(saveToll)}>
                             <IonItem>
                                 <IonInput label="Id praça" id="id" disabled labelPlacement="floating"></IonInput>
                             </IonItem>

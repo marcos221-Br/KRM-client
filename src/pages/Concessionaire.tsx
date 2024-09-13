@@ -4,6 +4,7 @@ import { ConcessionaireController } from "../controllers/ConcessionaireControlle
 import { Concessionaire } from "../models/Concessionaire";
 import pencil from '../images/pencil-line.svg';
 import trashCan from '../images/delete-bin-5-line.svg';
+import { useForm } from "react-hook-form";
 
 var concessionaireController = new ConcessionaireController();
 var concessionaire = new Concessionaire();
@@ -102,6 +103,7 @@ function clearInputs(){
 }
 
 const ConcessionairePage: React.FC = () => {
+    var { handleSubmit } = useForm();
     findAllConcessionaires();
     return (
         <IonPage>
@@ -117,7 +119,7 @@ const ConcessionairePage: React.FC = () => {
                 <div className="concessionaire">
                     <div>
                         <h1>Cadastro de concessionárias</h1>
-                        <form onSubmit={saveConcessionaire}>
+                        <form onSubmit={handleSubmit(saveConcessionaire)}>
                             <IonItem>
                                 <IonInput label="Id Concesionária" id="id" disabled labelPlacement="floating"></IonInput>
                             </IonItem>

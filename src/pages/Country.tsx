@@ -4,6 +4,7 @@ import { Country } from "../models/Country";
 import { CountryController } from "../controllers/CountryController";
 import pencil from '../images/pencil-line.svg';
 import trashCan from '../images/delete-bin-5-line.svg';
+import { useForm } from "react-hook-form";
 
 var countryController = new CountryController();
 var country = new Country();
@@ -96,6 +97,7 @@ function clearInputs(){
 }
 
 const CountryPage: React.FC = () => {
+    var { handleSubmit } = useForm();
     findAllCountries();
     return (
         <IonPage>
@@ -111,7 +113,7 @@ const CountryPage: React.FC = () => {
                 <div className="country">
                     <div>
                         <h1>Cadastro de países</h1>
-                        <form onSubmit={saveCountry}>
+                        <form onSubmit={handleSubmit(saveCountry)}>
                             <IonItem>
                                 <IonInput label="Id País" id="id" disabled labelPlacement="floating"></IonInput>
                             </IonItem>

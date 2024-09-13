@@ -4,6 +4,7 @@ import { CarController } from '../controllers/CarController';
 import { Car } from '../models/Car';
 import pencil from '../images/pencil-line.svg';
 import trashCan from '../images/delete-bin-5-line.svg';
+import { useForm } from 'react-hook-form';
 
 var carController = new CarController();
 var car = new Car();
@@ -122,6 +123,7 @@ function clearInputs(){
 }
 
 const CarPage: React.FC = () => {
+  var { handleSubmit} = useForm()
   findAllCars();
   return (
     <IonPage>
@@ -137,7 +139,7 @@ const CarPage: React.FC = () => {
         <div className='car'>
           <div>
             <h1>Cadastro de carros</h1>
-            <form onSubmit={saveCar}>
+            <form onSubmit={handleSubmit(saveCar)}>
               <IonItem>
                 <IonInput label="Id Carro" id='carId' disabled labelPlacement='floating'></IonInput>
               </IonItem>
