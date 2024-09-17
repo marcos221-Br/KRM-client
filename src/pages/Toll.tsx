@@ -1,4 +1,4 @@
-import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonList, IonPage, IonSelect, IonTitle, IonToggle, IonToolbar } from "@ionic/react"
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonList, IonPage, IonSelect, IonText, IonTitle, IonToggle, IonToolbar } from "@ionic/react"
 import './Toll.css'
 import { ConcessionaireController } from "../controllers/ConcessionaireController";
 import { Toll } from "../models/Toll";
@@ -155,7 +155,7 @@ const TollPage: React.FC = () => {
             <IonHeader>
                 <IonToolbar>
                     <IonButtons slot='start'>
-                        <IonBackButton defaultHref='/'></IonBackButton>
+                        <IonBackButton defaultHref='/car'></IonBackButton>
                     </IonButtons>
                     <IonTitle>Praças</IonTitle>
                 </IonToolbar>
@@ -169,10 +169,12 @@ const TollPage: React.FC = () => {
                                 <IonInput label="Id praça" id="id" disabled></IonInput>
                             </IonItem>
                             <IonItem>
-                                <IonLabel id="label">
+                                <IonLabel>
                                     <IonSelect label="Concessionária" id="concessionaire" placeholder="Selecione a concessionária" onClick={findConcessionaires} interface="popover"></IonSelect>
-                                    <a href="/concessionaire">Nova concessionária +</a>
                                 </IonLabel>
+                                <IonItem routerLink="/concessionaire" id="item">
+                                    <IonText slot="end" color={"primary"}>Nova Concessionária +</IonText>
+                                </IonItem>
                             </IonItem>
                             <IonItem>
                                 <label htmlFor="tollId">Cód. Praça</label>

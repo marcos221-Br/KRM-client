@@ -107,7 +107,7 @@ const CountryPage: React.FC = () => {
             <IonHeader>
                 <IonToolbar>
                     <IonButtons slot='start'>
-                        <IonBackButton defaultHref='/'></IonBackButton>
+                        <IonBackButton defaultHref='/car'></IonBackButton>
                     </IonButtons>
                     <IonTitle>Países</IonTitle>
                 </IonToolbar>

@@ -17,6 +17,6 @@
     position: absolute;
 }
 
-#label {
-    text-align: end;
+#item {
+    font-size: small;
 }
