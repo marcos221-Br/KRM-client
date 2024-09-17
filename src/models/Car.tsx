@@ -82,4 +82,8 @@ export class Car{
     public getStatus(){
         return this.status;
     }
+
+    public toString(){
+        return 'Car:\nId: ' + this.carId + ',\nRenavam: ' + this.renavam + ',\nPlate: ' + this.plate + ',\nModel: ' + this.model + ',\nYear: ' + this.year + ',\nKilometer: ' + this.kilometer + ',\nRegistration Date: ' + this.registration_date + ',\nStatus: ' + this.status;
+    }
 }

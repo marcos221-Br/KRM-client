@@ -5,6 +5,9 @@ import { Concessionaire } from "../models/Concessionaire";
 import pencil from '../images/pencil-line.svg';
 import trashCan from '../images/delete-bin-5-line.svg';
 import { useForm } from "react-hook-form";
+import { InputNumber } from "primereact/inputnumber";
+import { useState } from "react";
+import { InputText } from "primereact/inputtext";
 
 var concessionaireController = new ConcessionaireController();
 var concessionaire = new Concessionaire();
@@ -105,6 +108,8 @@ function clearInputs(){
 const ConcessionairePage: React.FC = () => {
     var { handleSubmit } = useForm();
     findAllConcessionaires();
+    const [concessionaireId, setConcessionaireId] = useState<number>();
+    const [concessionaireName, setConcessionaireName] = useState<string>();
     return (
         <IonPage>
             <IonHeader>
@@ -121,13 +126,15 @@ const ConcessionairePage: React.FC = () => {
                         <h1>Cadastro de concessionárias</h1>
                         <form onSubmit={handleSubmit(saveConcessionaire)}>
                             <IonItem>
-                                <IonInput label="Id Concesionária" id="id" disabled labelPlacement="floating"></IonInput>
+                                <IonInput label="Id Concesionária" id="id" disabled></IonInput>
                             </IonItem>
                             <IonItem>
-                                <IonInput label='Cód. Concessionária' id='concessionaireId' labelPlacement='floating' placeholder="Digite o código da concessionária" type="number" required min={0}></IonInput>
+                                <label htmlFor="concessionaireId">Cód. Concessionária</label>
+                                <InputNumber inputId='concessionaireId' value={concessionaireId} onValueChange={(e) => setConcessionaireId(e.value)} useGrouping={false} required min={0} placeholder="Digite o código da concessionária"></InputNumber>
                             </IonItem>
                             <IonItem>
-                                <IonInput label="Nome Concessionária" id="concessionaireName" labelPlacement="floating" placeholder="Digite o nome da conessionária" required></IonInput>
+                                <label htmlFor="concessionaireName">Nome Concessionária</label>
+                                <InputText id='concessionaireName' value={concessionaireName} onChange={(e) => setConcessionaireName(e.target.value)} keyfilter='alphanum' required placeholder="Digite o nome da concessionária"></InputText>
                             </IonItem>
                             <br />
                             <div className='buttons'>

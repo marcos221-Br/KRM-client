@@ -1,10 +1,14 @@
-import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonList, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonList, IonPage, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/react';
+import { InputText } from 'primereact/inputtext';
+import { InputNumber } from 'primereact/inputnumber';
+import { InputMask } from 'primereact/inputmask';
 import './Car.css';
 import { CarController } from '../controllers/CarController';
 import { Car } from '../models/Car';
 import pencil from '../images/pencil-line.svg';
 import trashCan from '../images/delete-bin-5-line.svg';
 import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 
 var carController = new CarController();
 var car = new Car();
@@ -15,7 +19,7 @@ function findCar(value:any){
     (document.getElementById('renavam') as HTMLInputElement).value = response.renavam;
     (document.getElementById('model') as HTMLInputElement).value = response.model;
     (document.getElementById('year') as HTMLInputElement).value = response.year;
-    (document.getElementById('kilometer') as HTMLInputElement).value = response.kilometer;
+    (document.getElementById('kilometer') as HTMLInputElement).value = response.kilometer + ' km';
     (document.getElementById('registration_date') as HTMLInputElement).value = response.registration_date;
     (document.getElementById('status') as HTMLInputElement).value = response.status;
     (document.getElementById('plate') as HTMLInputElement).value = response.plate;
@@ -36,7 +40,7 @@ function findAllCars(){
         plate.setAttribute('id',response[i].plate);
         model.innerHTML = response[i].model;
         model.setAttribute('id',response[i].model);
-        status.innerHTML = response[i].status;
+        status.innerHTML = response[i].status == 'Active' ? 'Ativo':'Inativo';
         let editIcon = document.createElement('ion-icon');
         let editButton = document.createElement('ion-button');
         editIcon.setAttribute('icon',pencil);
@@ -89,7 +93,7 @@ function saveCar(){
       }else{
         alert('Carro com placa' + car.getPlate() + ' cadastrado anteriormente!');
       }
-    }).catch(error => alert('Necessário preencher todos os campos para cadastrar o carro!'))
+    }).catch(error => alert('Sem acesso ao sistema'))
   }else{
     car.setCarId(parseInt(id));
     carController.updateCar(car).then(function(response){
@@ -125,6 +129,12 @@ function clearInputs(){
 const CarPage: React.FC = () => {
   var { handleSubmit} = useForm()
   findAllCars();
+  const [plate, setPlate] = useState<string>();
+  const [model, setModel] = useState<string>();
+  const [year, setYear] = useState<number>();
+  const [kilometer, setKilometer] = useState<number>();
+  const [renavam, setRenavam] = useState<string>();
+
   return (
     <IonPage>
       <IonHeader>
@@ -141,28 +151,36 @@ const CarPage: React.FC = () => {
             <h1>Cadastro de carros</h1>
             <form onSubmit={handleSubmit(saveCar)}>
               <IonItem>
-                <IonInput label="Id Carro" id='carId' disabled labelPlacement='floating'></IonInput>
+                <IonInput label="Id Carro" id='carId' disabled></IonInput>
               </IonItem>
               <IonItem>
-                <IonInput label='Renavam' id='renavam' labelPlacement='floating' placeholder="Digite o renavam do carro" maxlength={11} required></IonInput>
+                <label htmlFor="renavam">Renavam</label>
+                <InputText id='renavam' value={renavam} onChange={(e) => setRenavam(e.target.value)} keyfilter='alphanum' required placeholder="Digite o renavam do carro" maxLength={11}></InputText>
               </IonItem>
               <IonItem>
-                <IonInput label='Placa' id='plate' labelPlacement='floating' placeholder="Digite a placa do carro" required maxlength={8}></IonInput>
+                <label htmlFor="plate">Placa</label>
+                <InputMask id='plate' mask='aaa-9*99' value={plate} onChange={(e) => setPlate(e.target.value)} required keyfilter='alphanum' placeholder="Digite a placa do carro"></InputMask>
               </IonItem>
               <IonItem>
-                <IonInput label='Modelo' id='model' labelPlacement='floating' placeholder="Digite o modelo do carro" required></IonInput>
+                <label htmlFor="model">Modelo</label>
+                <InputText id='model' value={model} onChange={(e) => setModel(e.target.value)} keyfilter='alphanum' required placeholder="Digite o modelo do carro"></InputText>
               </IonItem>
               <IonItem>
-                <IonInput label='Ano' id='year' labelPlacement='floating' placeholder="Digite o ano do carro" type='number' required min={0}></IonInput>
+                <label htmlFor="year">Ano</label>
+                <InputNumber inputId='year' value={year} onValueChange={(e) => setYear(e.value)} useGrouping={false} required min={1886} maxLength={4} placeholder="Digite o ano do carro"></InputNumber>
               </IonItem>
               <IonItem>
-                <IonInput label='Quilometragem' id='kilometer' labelPlacement='floating' placeholder="Digite a quilometragem do carro" type='number' required min={0}></IonInput>
+                <label htmlFor="kilometer">Quilometragem</label>
+                <InputNumber inputId='kilometer' value={kilometer} onValueChange={(e) => setKilometer(e.value)} suffix=' km' required min={0} placeholder="Digite a quilometragem do carro"></InputNumber>
               </IonItem>
               <IonItem>
-                <IonInput label='Data de registro' id='registration_date' labelPlacement='floating' type='date' required></IonInput>
+                <IonInput label='Data de registro' id='registration_date' type='date' required></IonInput>
               </IonItem>
               <IonItem>
-                <IonInput label='Status' id='status' labelPlacement='floating' placeholder="Digite o status do carro" required></IonInput>
+                <IonSelect label='Status' id='status' placeholder="Selecione o status do carro" interface='popover'>
+                  <IonSelectOption value={'Active'}>Ativo</IonSelectOption>
+                  <IonSelectOption value={'Disable'}>Inativo</IonSelectOption>
+                </IonSelect>
               </IonItem>
               <br />
               <div className='buttons'>

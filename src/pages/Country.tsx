@@ -5,6 +5,8 @@ import { CountryController } from "../controllers/CountryController";
 import pencil from '../images/pencil-line.svg';
 import trashCan from '../images/delete-bin-5-line.svg';
 import { useForm } from "react-hook-form";
+import { InputText } from "primereact/inputtext";
+import { useState } from "react";
 
 var countryController = new CountryController();
 var country = new Country();
@@ -66,7 +68,7 @@ function saveCountry(){
                     clearInputs();
                     findAllCountries();
                     alert(response.countryName + ' criado com sucesso!');
-                }).catch(error => alert('Necessário preencher todos os campos para cadastrar o país!'));
+                }).catch(error => alert('Sem acesso ao sistema'));
             }else{
                 alert(response.countryName + ' cadastrado anteriormente!');
             }
@@ -99,6 +101,7 @@ function clearInputs(){
 const CountryPage: React.FC = () => {
     var { handleSubmit } = useForm();
     findAllCountries();
+    const [countryName, setCountryName] = useState<string>();
     return (
         <IonPage>
             <IonHeader>
@@ -115,10 +118,11 @@ const CountryPage: React.FC = () => {
                         <h1>Cadastro de países</h1>
                         <form onSubmit={handleSubmit(saveCountry)}>
                             <IonItem>
-                                <IonInput label="Id País" id="id" disabled labelPlacement="floating"></IonInput>
+                                <IonInput label="Id País" id="id" disabled></IonInput>
                             </IonItem>
                             <IonItem>
-                                <IonInput label="Nome País" id="countryName" labelPlacement="floating" placeholder="Digite o nome do país" required></IonInput>
+                                <label htmlFor="countryName">Nome País</label>
+                                <InputText id='countryName' value={countryName} onChange={(e) => setCountryName(e.target.value)} keyfilter='alpha' required placeholder="Digite o nome do país"></InputText>
                             </IonItem>
                             <br />
                             <div className="buttons">

@@ -1,2 +1,10 @@
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
+
+label{
+    margin-right: 10px;
+}
+
+input{
+    width: 250px;
+}

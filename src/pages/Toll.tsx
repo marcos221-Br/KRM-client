@@ -6,6 +6,9 @@ import { TollController } from "../controllers/TollController";
 import pencil from '../images/pencil-line.svg';
 import trashCan from '../images/delete-bin-5-line.svg';
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { InputText } from "primereact/inputtext";
+import { InputNumber } from "primereact/inputnumber";
 
 var concessionaireController = new ConcessionaireController();
 var tollController = new TollController();
@@ -91,7 +94,7 @@ function saveToll(){
         let id = (document.getElementById('id') as HTMLInputElement).value;
         toll.setConcessionaire(parseInt((document.getElementById('concessionaire') as HTMLIonSelectElement).value));
         toll.setEmptyCharge((document.getElementById('emptyCharge') as HTMLIonToggleElement).checked);
-        toll.setPrice(parseFloat((document.getElementById('price') as HTMLInputElement).value));
+        toll.setPrice(parseFloat((document.getElementById('price') as HTMLInputElement).value.replace('R$','').replace(',','.')));
         toll.setTollId(parseInt((document.getElementById('tollId') as HTMLInputElement).value));
         toll.setTollName((document.getElementById('tollName') as HTMLInputElement).value);
         if(id == ''){
@@ -145,6 +148,8 @@ function clearInputs(){
 const TollPage: React.FC = () => {
     var { handleSubmit } = useForm();
     findAllTolls();
+    const [tollId, setTollId] = useState<number>();
+    const [tollName, setTollName] = useState<string>();
     return (
         <IonPage>
             <IonHeader>
@@ -161,7 +166,7 @@ const TollPage: React.FC = () => {
                         <h1>Cadastro de praças</h1>
                         <form onSubmit={handleSubmit(saveToll)}>
                             <IonItem>
-                                <IonInput label="Id praça" id="id" disabled labelPlacement="floating"></IonInput>
+                                <IonInput label="Id praça" id="id" disabled></IonInput>
                             </IonItem>
                             <IonItem>
                                 <IonLabel id="label">
@@ -170,13 +175,17 @@ const TollPage: React.FC = () => {
                                 </IonLabel>
                             </IonItem>
                             <IonItem>
-                                <IonInput label="Cód. Praça" id="tollId" labelPlacement="floating" placeholder="Digite o código da praça" type="number" required min={0}></IonInput>
+                                <label htmlFor="tollId">Cód. Praça</label>
+                                <InputNumber inputId='tollId' value={tollId} onValueChange={(e) => setTollId(e.value)} useGrouping={false} required min={0} placeholder="Digite o código da praça"></InputNumber>
                             </IonItem>
                             <IonItem>
-                                <IonInput label="Nome Praça" id="tollName" labelPlacement="floating" placeholder="Digite o nome da praça" required></IonInput>
+                                <label htmlFor="tollName">Nome Praça</label>
+                                <InputText id='tollName' value={tollName} onChange={(e) => setTollName(e.target.value)} keyfilter='alphanum' required placeholder="Digite o nome da praça"></InputText>
                             </IonItem>
                             <IonItem>
-                                <IonInput label="Preço" id="price" labelPlacement="floating" placeholder="Digite o valor da praça" type="number" step="0.01" required min={0}></IonInput>
+                                <IonInput id="price" label="Preço" type="number" step="0.01" placeholder="Digite o valor da praça" min={0}>
+                                    <IonLabel slot="start">R$</IonLabel>
+                                </IonInput>
                             </IonItem>
                             <IonItem>
                                 <IonToggle id="emptyCharge">Cobra Vazio</IonToggle>
