@@ -134,7 +134,7 @@ const ConcessionairePage: React.FC = () => {
                             </IonItem>
                             <IonItem>
                                 <label htmlFor="concessionaireName">Nome Concessionária</label>
-                                <InputText id='concessionaireName' value={concessionaireName} onChange={(e) => setConcessionaireName(e.target.value)} keyfilter='alphanum' required placeholder="Digite o nome da concessionária"></InputText>
+                                <InputText id='concessionaireName' value={concessionaireName} onChange={(e) => setConcessionaireName(e.target.value)} keyfilter={/^[^<>*!@#$%¨()_+{}[];:]+$/} required placeholder="Digite o nome da concessionária"></InputText>
                             </IonItem>
                             <br />
                             <div className='buttons'>

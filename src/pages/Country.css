@@ -1,18 +1,11 @@
-@media (max-width: 800px) {
-    .country{
-        left: 0%;
-        right: 0%;
-    } 
-}
-
-@media (min-width: 801px) {
+@media (min-width: 800px) {
     .country{   
-        left: 15%;
-        right: 15%;
+        margin-left: 15%;
+        margin-right: 15%;
     }
 }
 
 .country{
     text-align: center;
-    position: absolute;
+    position: relative;
 }

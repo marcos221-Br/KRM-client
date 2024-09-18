@@ -182,7 +182,7 @@ const TollPage: React.FC = () => {
                             </IonItem>
                             <IonItem>
                                 <label htmlFor="tollName">Nome Praça</label>
-                                <InputText id='tollName' value={tollName} onChange={(e) => setTollName(e.target.value)} keyfilter='alphanum' required placeholder="Digite o nome da praça"></InputText>
+                                <InputText id='tollName' value={tollName} onChange={(e) => setTollName(e.target.value)} keyfilter={/^[^<>*!@#$%¨()_+{}[];:]+$/} required placeholder="Digite o nome da praça"></InputText>
                             </IonItem>
                             <IonItem>
                                 <IonInput id="price" label="Preço" type="number" step="0.01" placeholder="Digite o valor da praça" min={0}>

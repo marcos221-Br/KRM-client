@@ -1,18 +1,11 @@
-@media (max-width: 800px) {
-    .concessionaire{
-        left: 0%;
-        right: 0%;
-    } 
-}
-
 @media (min-width: 801px) {
     .concessionaire{   
-        left: 15%;
-        right: 15%;
+        margin-left: 15%;
+        margin-right: 15%;
     }
 }
 
 .concessionaire{
     text-align: center;
-    position: absolute;
+    position: relative;
 }

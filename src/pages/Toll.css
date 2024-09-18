@@ -1,20 +1,13 @@
-@media (max-width: 800px) {
-    .toll{
-        left: 0%;
-        right: 0%;
-    } 
-}
-
-@media (min-width: 801px) {
+@media (min-width: 800px) {
     .toll{   
-        left: 15%;
-        right: 15%;
+        margin-left: 15%;
+        margin-right: 15%;
     }
 }
 
 .toll{
     text-align: center;
-    position: absolute;
+    position: relative;
 }
 
 #item {

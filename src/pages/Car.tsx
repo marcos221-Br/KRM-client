@@ -131,7 +131,7 @@ const CarPage: React.FC = () => {
   findAllCars();
   const [plate, setPlate] = useState<string>();
   const [model, setModel] = useState<string>();
-  const [year, setYear] = useState<number>();
+  const [year, setYear] = useState<string>();
   const [kilometer, setKilometer] = useState<number>();
   const [renavam, setRenavam] = useState<string>();
 
@@ -155,19 +155,19 @@ const CarPage: React.FC = () => {
               </IonItem>
               <IonItem>
                 <label htmlFor="renavam">Renavam</label>
-                <InputText id='renavam' value={renavam} onChange={(e) => setRenavam(e.target.value)} keyfilter='alphanum' required placeholder="Digite o renavam do carro" maxLength={11}></InputText>
+                <InputMask id='renavam' mask='***********' value={renavam} onChange={(e) => setRenavam(e.target.value)} required placeholder="Digite o renavam do carro"></InputMask>
               </IonItem>
               <IonItem>
                 <label htmlFor="plate">Placa</label>
-                <InputMask id='plate' mask='aaa-9*99' value={plate} onChange={(e) => setPlate(e.target.value)} required keyfilter='alphanum' placeholder="Digite a placa do carro"></InputMask>
+                <InputMask id='plate' mask='aaa9*99' value={plate} onChange={(e) => setPlate(e.target.value)} required placeholder="Digite a placa do carro"></InputMask>
               </IonItem>
               <IonItem>
                 <label htmlFor="model">Modelo</label>
-                <InputText id='model' value={model} onChange={(e) => setModel(e.target.value)} keyfilter='alphanum' required placeholder="Digite o modelo do carro"></InputText>
+                <InputText id='model' value={model} onChange={(e) => setModel(e.target.value)} keyfilter={/^[^<>*!@#$%¨()_+{}[];:]+$/} required placeholder="Digite o modelo do carro"></InputText>
               </IonItem>
               <IonItem>
                 <label htmlFor="year">Ano</label>
-                <InputNumber inputId='year' value={year} onValueChange={(e) => setYear(e.value)} useGrouping={false} required min={1886} maxLength={4} placeholder="Digite o ano do carro"></InputNumber>
+                <InputMask id='year' value={year} onChange={(e) => setYear(e.target.value)} required mask='9999' placeholder="Digite o ano do carro"></InputMask>
               </IonItem>
               <IonItem>
                 <label htmlFor="kilometer">Quilometragem</label>
