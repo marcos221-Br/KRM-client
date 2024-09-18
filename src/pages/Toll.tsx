@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
+import { HttpStatusCode } from "axios";
 
 var concessionaireController = new ConcessionaireController();
 var tollController = new TollController();
@@ -105,9 +106,13 @@ function saveToll(){
                         findAllTolls();
                         clearInputs();
                         alert(response.tollName + ' com código ' + response.tollId + ' cadastrada com sucesso!');
-                    }).catch(error => alert('Sem acesso ao sistema'));
+                    }).catch(function(response){
+                        if(response.status == HttpStatusCode.UnprocessableEntity){
+                          alert('Código de praça já cadastrado!');
+                        }
+                    });
                 }else{
-                    alert('Praça de código ' + response.id + ' já se encontra cadastrada!');
+                    alert('Praça de código ' + response.tollId + ' já se encontra cadastrada!');
                 }
             })
         }else{
@@ -116,7 +121,11 @@ function saveToll(){
                 findAllTolls();
                 clearInputs();
                 alert('Praça de nome ' + response.tollName + ' com código ' + response.tollId + ' atualizada com sucesso!');
-            }).catch(error => alert('Sem acesso ao sistema'));
+            }).catch(function(response){
+                if(response.status == HttpStatusCode.UnprocessableEntity){
+                  alert('Código de praça já cadastrado!');
+                }
+            });
         }
     }else{
         alert("Necessário fornecer uma concessionária!");
@@ -182,7 +191,7 @@ const TollPage: React.FC = () => {
                             </IonItem>
                             <IonItem>
                                 <label htmlFor="tollName">Nome Praça</label>
-                                <InputText id='tollName' value={tollName} onChange={(e) => setTollName(e.target.value)} keyfilter={/^[^<>*!@#$%¨()_+{}[];:]+$/} required placeholder="Digite o nome da praça"></InputText>
+                                <InputText id='tollName' value={tollName} onChange={(e) => setTollName(e.target.value)} keyfilter={/^[^<>*!@#$%¨()_+{};:"']+$/} required placeholder="Digite o nome da praça"></InputText>
                             </IonItem>
                             <IonItem>
                                 <IonInput id="price" label="Preço" type="number" step="0.01" placeholder="Digite o valor da praça" min={0}>

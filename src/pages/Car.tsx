@@ -9,6 +9,7 @@ import pencil from '../images/pencil-line.svg';
 import trashCan from '../images/delete-bin-5-line.svg';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
+import { HttpStatusCode } from 'axios';
 
 var carController = new CarController();
 var car = new Car();
@@ -85,22 +86,34 @@ function saveCar(){
     carController.findCar(car.getPlate()).then(function(response){
       if(response.carId === undefined){
         carController.createCar(car).then(function(response){
-          (document.getElementById('carId') as HTMLInputElement).value = response.carId;
-          clearInputs();
-          findAllCars();
-          alert(response.model + ' com placa ' + response.plate + ' cadastrado com sucesso!');
-        }).catch(error => alert('Sem acesso ao sistema'));
+          if(response.status == HttpStatusCode.UnprocessableEntity){
+            alert("Renavam duplicado!");
+          }else{
+            (document.getElementById('carId') as HTMLInputElement).value = response.carId;
+            clearInputs();
+            findAllCars();
+            alert(response.model + ' com placa ' + response.plate + ' cadastrado com sucesso!');
+          }
+        }).catch(function(response){
+          if(response.status == HttpStatusCode.UnprocessableEntity){
+            alert('Renavam já cadastrado!');
+          }
+        });
       }else{
-        alert('Carro com placa' + car.getPlate() + ' cadastrado anteriormente!');
+        alert('Carro com placa ' + car.getPlate() + ' cadastrado anteriormente!');
       }
-    }).catch(error => alert('Sem acesso ao sistema'))
+    }).catch(error => alert(error))
   }else{
     car.setCarId(parseInt(id));
     carController.updateCar(car).then(function(response){
       clearInputs();
       findAllCars();
       alert(response.model + ' com placa ' + response.plate + ' foi atualizado com sucesso!');
-    }).catch(error => alert('Sem acesso ao sistema'));
+    }).catch(function(response){
+      if(response.status == HttpStatusCode.UnprocessableEntity){
+        alert('Renavam já cadastrado!');
+      }
+    });
   }
 }
 
@@ -163,7 +176,7 @@ const CarPage: React.FC = () => {
               </IonItem>
               <IonItem>
                 <label htmlFor="model">Modelo</label>
-                <InputText id='model' value={model} onChange={(e) => setModel(e.target.value)} keyfilter={/^[^<>*!@#$%¨()_+{}[];:]+$/} required placeholder="Digite o modelo do carro"></InputText>
+                <InputText id='model' value={model} onChange={(e) => setModel(e.target.value)} keyfilter={/^[^<>*!@#$%¨()_+{};:"']+$/} required placeholder="Digite o modelo do carro"></InputText>
               </IonItem>
               <IonItem>
                 <label htmlFor="year">Ano</label>
@@ -171,7 +184,7 @@ const CarPage: React.FC = () => {
               </IonItem>
               <IonItem>
                 <label htmlFor="kilometer">Quilometragem</label>
-                <InputNumber inputId='kilometer' value={kilometer} onValueChange={(e) => setKilometer(e.value)} suffix=' km' required min={0} placeholder="Digite a quilometragem do carro"></InputNumber>
+                <InputNumber inputId='kilometer' value={kilometer} onValueChange={(e) => setKilometer(e.value)} suffix=' km' required min={0} placeholder="Digite a quilometragem do carro" useGrouping={false}></InputNumber>
               </IonItem>
               <IonItem>
                 <IonInput label='Data de registro' id='registration_date' type='date' required></IonInput>

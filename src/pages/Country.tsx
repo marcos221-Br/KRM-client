@@ -7,6 +7,7 @@ import trashCan from '../images/delete-bin-5-line.svg';
 import { useForm } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { useState } from "react";
+import { HttpStatusCode } from "axios";
 
 var countryController = new CountryController();
 var country = new Country();
@@ -68,7 +69,11 @@ function saveCountry(){
                     clearInputs();
                     findAllCountries();
                     alert(response.countryName + ' criado com sucesso!');
-                }).catch(error => alert('Sem acesso ao sistema'));
+                }).catch(function(response){
+                    if(response.status == HttpStatusCode.UnprocessableEntity){
+                      alert('Código de país já cadastrado!');
+                    }
+                  });
             }else{
                 alert(response.countryName + ' cadastrado anteriormente!');
             }
@@ -79,7 +84,11 @@ function saveCountry(){
             clearInputs();
             findAllCountries();
             alert(response.countryName + ' cadastrado com sucesso!');
-        }).catch(error => alert('Sem acesso ao sistema'));
+        }).catch(function(response){
+            if(response.status == HttpStatusCode.UnprocessableEntity){
+              alert('Código de país já cadastrado!');
+            }
+        });
     }
 }
 

@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { InputNumber } from "primereact/inputnumber";
 import { useState } from "react";
 import { InputText } from "primereact/inputtext";
+import { HttpStatusCode } from "axios";
 
 var concessionaireController = new ConcessionaireController();
 var concessionaire = new Concessionaire();
@@ -72,7 +73,11 @@ function saveConcessionaire(){
                     clearInputs();
                     findAllConcessionaires();
                     alert('Concessionária com código ' + response.concessionaireId + ' adicionada com sucesso!');
-                }).catch(error => alert('Sem acesso ao sistema'));
+                }).catch(function(response){
+                    if(response.status == HttpStatusCode.UnprocessableEntity){
+                      alert('Código de concessionária já cadastrado!');
+                    }
+                  });
             }else{
                 alert('A concecionária com código ' + concessionaire.getConcessionaireId() + ' já se encontra cadastrada!');
             }
@@ -83,7 +88,11 @@ function saveConcessionaire(){
             clearInputs();
             findAllConcessionaires();
             alert('Concessionária de código ' + response.concessionaireId + ' atualizada com sucesso!');
-        }).catch(error => alert('Sem acesso ao sistema'));
+        }).catch(function(response){
+            if(response.status == HttpStatusCode.UnprocessableEntity){
+              alert('Código de concessionária já cadastrado!');
+            }
+        });
     }
 }
 
@@ -134,7 +143,7 @@ const ConcessionairePage: React.FC = () => {
                             </IonItem>
                             <IonItem>
                                 <label htmlFor="concessionaireName">Nome Concessionária</label>
-                                <InputText id='concessionaireName' value={concessionaireName} onChange={(e) => setConcessionaireName(e.target.value)} keyfilter={/^[^<>*!@#$%¨()_+{}[];:]+$/} required placeholder="Digite o nome da concessionária"></InputText>
+                                <InputText id='concessionaireName' value={concessionaireName} onChange={(e) => setConcessionaireName(e.target.value)} keyfilter={/^[^<>*!@#$%¨()_+{};:"']+$/} required placeholder="Digite o nome da concessionária"></InputText>
                             </IonItem>
                             <br />
                             <div className='buttons'>

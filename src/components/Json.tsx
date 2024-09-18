@@ -1,6 +1,6 @@
 import axios, { HttpStatusCode } from "axios";
 
-const url = 'http://localhost:8080/api';
+const url = 'http://172.25.156.9:8080/api';
 
 export function setHeader(key:string,value:string){
     axios.defaults.headers.common[key] = value
