@@ -1,31 +1,33 @@
-import { sendJson } from "../components/Json";
 import { Country } from "../models/Country";
+import { HttpConection } from "../components/Json";
 
 export class CountryController{
 
-    public constructor(){
+    private http;
 
+    public constructor(){
+        this.http = new HttpConection('8083');
     }
 
-    public findCountry(name:String){
-        return sendJson('/country/' + name,'GET');
+    public findCountry(countryName:String){
+        return this.http.sendJson('/country/' + countryName,'GET');
     }
 
     public createCountry(country:Country){
-        let json = JSON.stringify({ countryName: country.getCountryName() });
-        return sendJson('/country','POST',json);
+        let json = JSON.stringify(country);
+        return this.http.sendJson('/country','POST',json);
     }
 
     public updateCountry(country:Country){
         let json = JSON.stringify(country);
-        return sendJson('/country/' + country.getId(),'PUT',json);
+        return this.http.sendJson('/country/' + country.getId(),'PUT',json);
     }
 
     public deleteCountry(country:Country){
-        return sendJson('/country/' + country.getId(),'DELETE');
+        return this.http.sendJson('/country/' + country.getId(),'DELETE');
     }
 
     public findAllCountries(){
-        return sendJson('/country','GET');
+        return this.http.sendJson('/country','GET');
     }
 }

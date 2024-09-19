@@ -9,49 +9,48 @@ import pencil from '../images/pencil-line.svg';
 import trashCan from '../images/delete-bin-5-line.svg';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { HttpStatusCode } from 'axios';
 
 var carController = new CarController();
 var car = new Car();
 
 function findCar(value:any){
   carController.findCar(value.target.id).then(function(response){
-    (document.getElementById('carId') as HTMLInputElement).value = response.carId;
-    (document.getElementById('renavam') as HTMLInputElement).value = response.renavam;
-    (document.getElementById('model') as HTMLInputElement).value = response.model;
-    (document.getElementById('year') as HTMLInputElement).value = response.year;
-    (document.getElementById('kilometer') as HTMLInputElement).value = response.kilometer + ' km';
-    (document.getElementById('registration_date') as HTMLInputElement).value = response.registration_date;
-    (document.getElementById('status') as HTMLInputElement).value = response.status;
-    (document.getElementById('plate') as HTMLInputElement).value = response.plate;
+    (document.getElementById('id') as HTMLInputElement).value = response.data.id;
+    (document.getElementById('renavam') as HTMLInputElement).value = response.data.renavam;
+    (document.getElementById('model') as HTMLInputElement).value = response.data.model;
+    (document.getElementById('year') as HTMLInputElement).value = response.data.year;
+    (document.getElementById('kilometer') as HTMLInputElement).value = response.data.kilometer + ' km';
+    (document.getElementById('registration_date') as HTMLInputElement).value = response.data.registrationDate;
+    (document.getElementById('status') as HTMLInputElement).value = response.data.status;
+    (document.getElementById('plate') as HTMLInputElement).value = response.data.plate;
   })
 }
 
 function findAllCars(){
   carController.findAllCars().then(function(response){
     let list = (document.getElementById('carList') as HTMLIonListElement);
-    if(response.length > 0){
-      for(let i = 0; i < response.length; i++){
+    if(response.data.length > 0){
+      for(let i = 0; i < response.data.length; i++){
         let renavam = document.createElement('ion-label');
         let plate = document.createElement('ion-label');
         let model = document.createElement('ion-label');
         let status = document.createElement('ion-label');
-        renavam.innerHTML = response[i].renavam;
-        plate.innerHTML = response[i].plate;
-        plate.setAttribute('id',response[i].plate);
-        model.innerHTML = response[i].model;
-        model.setAttribute('id',response[i].model);
-        status.innerHTML = response[i].status == 'Active' ? 'Ativo':'Inativo';
+        renavam.innerHTML = response.data[i].renavam;
+        plate.innerHTML = response.data[i].plate;
+        plate.setAttribute('id',response.data[i].plate);
+        model.innerHTML = response.data[i].model;
+        model.setAttribute('id',response.data[i].model);
+        status.innerHTML = response.data[i].status == 'Active' ? 'Ativo':'Inativo';
         let editIcon = document.createElement('ion-icon');
         let editButton = document.createElement('ion-button');
         editIcon.setAttribute('icon',pencil);
-        editButton.setAttribute('id',response[i].plate);
+        editButton.setAttribute('id',response.data[i].plate);
         editButton.appendChild(editIcon);
         editButton.addEventListener('click',findCar);
         let deleteIcon = document.createElement('ion-icon');
         let deleteButton = document.createElement('ion-button');
         deleteIcon.setAttribute('icon',trashCan);
-        deleteButton.setAttribute('id',response[i].carId);
+        deleteButton.setAttribute('id',response.data[i].id);
         deleteButton.appendChild(deleteIcon);
         deleteButton.addEventListener('click',deleteCar);
         let ionItem = document.createElement('ion-item');
@@ -74,7 +73,7 @@ function findAllCars(){
 }
 
 function saveCar(){
-  let id = (document.getElementById('carId') as HTMLInputElement).value;
+  let id = (document.getElementById('id') as HTMLInputElement).value;
   car.setRenavam((document.getElementById('renavam') as HTMLInputElement).value);
   car.setPlate((document.getElementById('plate') as HTMLInputElement).value);
   car.setModel((document.getElementById('model') as HTMLInputElement).value);
@@ -83,35 +82,40 @@ function saveCar(){
   car.setRegistrationDate((document.getElementById('registration_date') as HTMLInputElement).value);
   car.setStatus((document.getElementById('status') as HTMLInputElement).value);
   if(id == ''){
-    carController.findCar(car.getPlate()).then(function(response){
-      if(response.carId === undefined){
-        carController.createCar(car).then(function(response){
-          if(response.status == HttpStatusCode.UnprocessableEntity){
-            alert("Renavam duplicado!");
+    carController.createCar(car).then(function(response){
+      if(response.status == 200){
+        clearInputs();
+        findAllCars();
+        alert(response.data.model + ' com placa ' + response.data.plate + ' cadastrado com sucesso!');
+      }else if(response.status == 422){
+        carController.findCar(car.getPlate()).then(function(response){
+          if(response.status == 200){
+            alert("Placa duplicada!");
           }else{
-            (document.getElementById('carId') as HTMLInputElement).value = response.carId;
-            clearInputs();
-            findAllCars();
-            alert(response.model + ' com placa ' + response.plate + ' cadastrado com sucesso!');
+            alert("Renavam duplicado!");
           }
-        }).catch(function(response){
-          if(response.status == HttpStatusCode.UnprocessableEntity){
-            alert('Renavam já cadastrado!');
+        })
+      }else{
+        alert('Erro inesperado!');
+      }
+    });
+  }else{
+    car.setId(parseInt(id));
+    carController.updateCar(car).then(function(response){
+      if(response.status == 200){
+        clearInputs();
+        findAllCars();
+        alert(response.data.model + ' com placa ' + response.data.plate + ' foi atualizado com sucesso!');
+      }else if(response.status == 422){
+        carController.findCar(car.getPlate()).then(function(response){
+          if(response.status == 200 && response.data.plate != car.getPlate()){
+            alert("Placa duplicada!");
+          }else{
+            alert("Renavam duplicado!");
           }
         });
       }else{
-        alert('Carro com placa ' + car.getPlate() + ' cadastrado anteriormente!');
-      }
-    }).catch(error => alert(error))
-  }else{
-    car.setCarId(parseInt(id));
-    carController.updateCar(car).then(function(response){
-      clearInputs();
-      findAllCars();
-      alert(response.model + ' com placa ' + response.plate + ' foi atualizado com sucesso!');
-    }).catch(function(response){
-      if(response.status == HttpStatusCode.UnprocessableEntity){
-        alert('Renavam já cadastrado!');
+        alert('Erro inesperado!');
       }
     });
   }
@@ -120,7 +124,7 @@ function saveCar(){
 function deleteCar(value:any){
   let plate = value.target.parentElement.children[1].id;
   let model = value.target.parentElement.children[2].id;
-  car.setCarId(value.target.id);
+  car.setId(value.target.id);
   carController.deleteCar(car).then(function(){
     clearInputs();
     alert(model + ' com placa ' + plate + ' excluido com sucesso!');
@@ -129,7 +133,7 @@ function deleteCar(value:any){
 }
 
 function clearInputs(){
-  (document.getElementById('carId') as HTMLInputElement).value = '';
+  (document.getElementById('id') as HTMLInputElement).value = '';
   (document.getElementById('renavam') as HTMLInputElement).value = '';
   (document.getElementById('plate') as HTMLInputElement).value = '';
   (document.getElementById('model') as HTMLInputElement).value = '';
@@ -164,7 +168,7 @@ const CarPage: React.FC = () => {
             <h1>Cadastro de carros</h1>
             <form onSubmit={handleSubmit(saveCar)}>
               <IonItem>
-                <IonInput label="Id Carro" id='carId' disabled></IonInput>
+                <IonInput label="Id Carro" id='id' disabled></IonInput>
               </IonItem>
               <IonItem>
                 <label htmlFor="renavam">Renavam</label>

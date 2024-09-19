@@ -1,32 +1,33 @@
 import { Car } from "../models/Car";
-import { sendJson } from "../components/Json";
+import { HttpConection } from "../components/Json";
 
 export class CarController{
 
+    private http;
+    
     public constructor(){
-        
+        this.http = new HttpConection('8081');
     }
 
     public findCar(plate:String){
-        return sendJson('/car/' + plate,'GET');
+        return this.http.sendJson('/car/' + plate,'GET');
     }
 
     public createCar(car:Car){
-        let json = JSON.stringify({ renavam: car.getRenavam(), plate: car.getPlate(), model: car.getModel(), year: car.getYear(), kilometer: car.getKilometer(),
-                                    registration_date: car.getRegistrationDate(), status: car.getStatus() });
-        return sendJson('/car','POST',json);
+        let json = JSON.stringify(car);
+        return this.http.sendJson('/car','POST',json);
     }
 
     public updateCar(car:Car){
         let json = JSON.stringify(car);
-        return sendJson('/car/' + car.getCarId(),'PUT',json);
+        return this.http.sendJson('/car/' + car.getId(),'PUT',json);
     }
 
     public deleteCar(car:Car){
-        return sendJson('/car/' + car.getCarId(),'DELETE');
+        return this.http.sendJson('/car/' + car.getId(),'DELETE');
     }
 
     public findAllCars(){
-        return sendJson('/car','GET');
+        return this.http.sendJson('/car','GET');
     }
 }

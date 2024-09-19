@@ -1,48 +1,55 @@
-import axios, { HttpStatusCode } from "axios";
+import axios from "axios";
 
-const url = 'http://172.25.156.9:8080/api';
+export class HttpConection{
 
-export function setHeader(key:string,value:string){
-    axios.defaults.headers.common[key] = value
-}
+    private url = 'http://localhost:';
 
-export function sendJson(endpoint:string,type:string,data:any = null):Promise<any> {
-    let result:any
-    switch (type) {
-        case 'GET':
-            result = axios.get(url + endpoint).then(function(response) {
-                if(response.status == HttpStatusCode.Ok){
-                    return response.data
-                }
-            }).catch(error => console.error(error))
-            break;
-        
-        case 'POST':
-            result = axios.post(url + endpoint,data).then(function(response) {
-                if(response.status == HttpStatusCode.Ok){
-                    return response.data
-                }
-            }).catch(error => console.error(error))
-            break;
-        
-        case 'PUT':
-            result = axios.put(url + endpoint,data).then(function(response) {
-                if(response.status == HttpStatusCode.Ok){
-                    return response.data
-                }
-            }).catch(error => console.error(error))
-            break;
-
-        case 'DELETE':
-            result = axios.delete(url + endpoint).then(function(response) {
-                if(response.status == HttpStatusCode.Ok){
-                    return response.data
-                }
-            }).catch(error => console.error(error))
-            break;
-    
-        default:
-            break;
+    public constructor(port:string){
+        this.url += port + '/api';
     }
-    return result
+
+    public static setHeader(key:string,value:string){
+        axios.defaults.headers.common[key] = value
+    }
+
+    public sendJson(endpoint:string,type:string,data:any = null):Promise<any> {
+        let result:any
+        switch (type) {
+            case 'GET':
+                result = axios.get(this.url + endpoint).then(function(response) {
+                    return response;
+                }).catch(function(error){
+                    return error;
+                });
+                break;
+            
+            case 'POST':
+                result = axios.post(this.url + endpoint,data).then(function(response) {
+                    return response;
+                }).catch(function(error){
+                    return error;
+                });
+                break;
+            
+            case 'PUT':
+                result = axios.put(this.url + endpoint,data).then(function(response) {
+                    return response;
+                }).catch(function(error){
+                    return error;
+                });
+                break;
+
+            case 'DELETE':
+                result = axios.delete(this.url + endpoint).then(function(response) {
+                    return response;
+                }).catch(function(error){
+                    return error;
+                });
+                break;
+        
+            default:
+                break;
+        }
+        return result
+    }
 }

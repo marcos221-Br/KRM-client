@@ -7,7 +7,6 @@ import trashCan from '../images/delete-bin-5-line.svg';
 import { useForm } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { useState } from "react";
-import { HttpStatusCode } from "axios";
 
 var countryController = new CountryController();
 var country = new Country();
@@ -15,23 +14,23 @@ var country = new Country();
 function findAllCountries(){
     countryController.findAllCountries().then(function(response){
         let list = (document.getElementById('countryList') as HTMLIonListElement);
-        if(response.length > 0){
-            for(let i = 0; i < response.length; i++){
+        if(response.data.length > 0){
+            for(let i = 0; i < response.data.length; i++){
                 let id = document.createElement('ion-label');
                 let countryName = document.createElement('ion-label');
-                id.innerHTML = response[i].id;
-                countryName.innerHTML = response[i].countryName;
-                countryName.setAttribute('id',response[i].countryName);
+                id.innerHTML = response.data[i].id;
+                countryName.innerHTML = response.data[i].countryName;
+                countryName.setAttribute('id',response.data[i].countryName);
                 let editIcon = document.createElement('ion-icon');
                 let editButton = document.createElement('ion-button');
                 editIcon.setAttribute('icon',pencil);
-                editButton.setAttribute('id',response[i].countryName);
+                editButton.setAttribute('id',response.data[i].countryName);
                 editButton.appendChild(editIcon);
                 editButton.addEventListener('click',findCountry);
                 let deleteIcon = document.createElement('ion-icon');
                 let deleteButton = document.createElement('ion-button');
                 deleteIcon.setAttribute('icon',trashCan);
-                deleteButton.setAttribute('id',response[i].id);
+                deleteButton.setAttribute('id',response.data[i].id);
                 deleteButton.appendChild(deleteIcon);
                 deleteButton.addEventListener('click',deleteCountry);
                 let ionItem = document.createElement('ion-item');
@@ -53,8 +52,8 @@ function findAllCountries(){
 
 function findCountry(value:any){
     countryController.findCountry(value.target.id).then(function(response){
-        (document.getElementById('id') as HTMLInputElement).value = response.id;
-        (document.getElementById('countryName') as HTMLInputElement).value = response.countryName;
+        (document.getElementById('id') as HTMLInputElement).value = response.data.id;
+        (document.getElementById('countryName') as HTMLInputElement).value = response.data.countryName;
     })
 }
 
@@ -62,31 +61,28 @@ function saveCountry(){
     let id = (document.getElementById('id') as HTMLInputElement).value;
     country.setCountryName((document.getElementById('countryName') as HTMLInputElement).value);
     if(id == ''){
-        countryController.findCountry(country.getCountryName()).then(function(response){
-            if(response.id === undefined){
-                countryController.createCountry(country).then(function(response){
-                    (document.getElementById('id') as HTMLInputElement).value = response.id;
-                    clearInputs();
-                    findAllCountries();
-                    alert(response.countryName + ' criado com sucesso!');
-                }).catch(function(response){
-                    if(response.status == HttpStatusCode.UnprocessableEntity){
-                      alert('Código de país já cadastrado!');
-                    }
-                  });
+        countryController.createCountry(country).then(function(response){
+            if(response.status == 200){
+                clearInputs();
+                findAllCountries();
+                alert(response.data.countryName + ' criado com sucesso!');
+            }else if(response.status == 422){
+                alert("País já cadastrado anteriormente");
             }else{
-                alert(response.countryName + ' cadastrado anteriormente!');
+                alert("Erro inesperado!");
             }
-        }).catch(error => alert('Sem acesso ao sistema'));
+        });
     }else{
         country.setId(parseInt(id));
         countryController.updateCountry(country).then(function(response){
-            clearInputs();
-            findAllCountries();
-            alert(response.countryName + ' cadastrado com sucesso!');
-        }).catch(function(response){
-            if(response.status == HttpStatusCode.UnprocessableEntity){
-              alert('Código de país já cadastrado!');
+            if(response.status == 200){
+                clearInputs();
+                findAllCountries();
+                alert(response.data.countryName + ' atualizado com sucesso!');
+            }else if(response.status == 422){
+                alert('País já cadastrado anteriormente');
+            }else{
+                alert("Erro inesperado!")
             }
         });
     }
@@ -131,7 +127,7 @@ const CountryPage: React.FC = () => {
                             </IonItem>
                             <IonItem>
                                 <label htmlFor="countryName">Nome País</label>
-                                <InputText id='countryName' value={countryName} onChange={(e) => setCountryName(e.target.value)} keyfilter='alpha' required placeholder="Digite o nome do país"></InputText>
+                                <InputText id='countryName' value={countryName} onChange={(e) => setCountryName(e.target.value)} keyfilter={/^[^<>*!@#$%¨()_+{};:"'0-9]+$/} required placeholder="Digite o nome do país"></InputText>
                             </IonItem>
                             <br />
                             <div className="buttons">

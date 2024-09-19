@@ -1,30 +1,30 @@
 export class Car{
-    private carId:Number;
+    private id:Number;
     private renavam:String;
     private plate:String;
     private model:String;
     private year:Number;
     private kilometer:Number;
-    private registration_date:String;
+    private registrationDate:String;
     private status:String;
 
     public constructor(){
-        this.carId = 0;
+        this.id = 0;
         this.renavam = '';
         this.plate = '';
         this.model = '';
         this.year = 0;
         this.kilometer = 0;
-        this.registration_date = '';
+        this.registrationDate = '';
         this.status = '';
     }
 
-    public setCarId(carId:Number){
-        this.carId = carId;
+    public setId(id:Number){
+        this.id = id;
     }
 
-    public getCarId(){
-        return this.carId;
+    public getId(){
+        return this.id;
     }
 
     public setRenavam(reindeer:String){
@@ -67,12 +67,12 @@ export class Car{
         return this.kilometer;
     }
 
-    public setRegistrationDate(registration_date:String){
-        this.registration_date = registration_date;
+    public setRegistrationDate(registrationDate:String){
+        this.registrationDate = registrationDate;
     }
 
     public getRegistrationDate(){
-        return this.registration_date;
+        return this.registrationDate;
     }
 
     public setStatus(status:String){
@@ -84,6 +84,6 @@ export class Car{
     }
 
     public toString(){
-        return 'Car:\nId: ' + this.carId + ',\nRenavam: ' + this.renavam + ',\nPlate: ' + this.plate + ',\nModel: ' + this.model + ',\nYear: ' + this.year + ',\nKilometer: ' + this.kilometer + ',\nRegistration Date: ' + this.registration_date + ',\nStatus: ' + this.status;
+        return 'Car:\nId: ' + this.id + ',\nRenavam: ' + this.renavam + ',\nPlate: ' + this.plate + ',\nModel: ' + this.model + ',\nYear: ' + this.year + ',\nKilometer: ' + this.kilometer + ',\nRegistration Date: ' + this.registrationDate + ',\nStatus: ' + this.status;
     }
 }

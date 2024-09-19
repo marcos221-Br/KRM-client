@@ -9,7 +9,6 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
-import { HttpStatusCode } from "axios";
 
 var concessionaireController = new ConcessionaireController();
 var tollController = new TollController();
@@ -18,24 +17,24 @@ var toll = new Toll();
 function findAllTolls(){
     tollController.findAllTolls().then(function(response){
         let list = (document.getElementById('tollList') as HTMLIonListElement);
-        if(response.length > 0){
-            for(let i = 0; i< response.length; i++){
+        if(response.data.length > 0){
+            for(let i = 0; i< response.data.length; i++){
                 let concessionaire = document.createElement('ion-label');
                 let tollId = document.createElement('ion-label');
                 let tollName = document.createElement('ion-label');
-                concessionaire.innerHTML = response[i].concessionaire.concessionaireName;
-                tollId.innerHTML = response[i].tollId;
-                tollName.innerHTML = response[i].tollName;
+                concessionaire.innerHTML = response.data[i].concessionaire.concessionaireName;
+                tollId.innerHTML = response.data[i].tollId;
+                tollName.innerHTML = response.data[i].tollName;
                 let editIcon = document.createElement('ion-icon');
                 let editButton = document.createElement('ion-button');
                 editIcon.setAttribute('icon',pencil);
-                editButton.setAttribute('id',response[i].tollId);
+                editButton.setAttribute('id',response.data[i].tollId);
                 editButton.appendChild(editIcon);
                 editButton.addEventListener('click',findToll);
                 let deleteIcon = document.createElement('ion-icon');
                 let deleteButton = document.createElement('ion-button');
                 deleteIcon.setAttribute('icon',trashCan);
-                deleteButton.setAttribute('id',response[i].tollId);
+                deleteButton.setAttribute('id',response.data[i].tollId);
                 deleteButton.appendChild(deleteIcon);
                 deleteButton.addEventListener('click',deleteToll);
                 let ionItem = document.createElement('ion-item');
@@ -58,12 +57,12 @@ function findAllTolls(){
 
 function findConcessionaires(){
     concessionaireController.findAllConcessionaires().then(function(response){
-        if(response.length != 0){
+        if(response.data.length != 0){
             let concessionaireSelector = (document.getElementById('concessionaire') as HTMLIonSelectElement);
-            for (let index = 0; index < response.length; index++) {
+            for (let index = 0; index < response.data.length; index++) {
                 let concessionaire = document.createElement('ion-select-option');
-                concessionaire.innerHTML = response[index].concessionaireId + ' | ' + response[index].concessionaireName;
-                concessionaire.value = response[index].id;
+                concessionaire.innerHTML = response.data[index].concessionaireId + ' | ' + response.data[index].concessionaireName;
+                concessionaire.value = response.data[index].id;
                 if(index != 0){
                     concessionaireSelector.appendChild(concessionaire);
                 }else{
@@ -76,17 +75,17 @@ function findConcessionaires(){
 
 function findToll(value:any){
     tollController.findToll(parseInt(value.target.id)).then(function(response){
-        (document.getElementById('id') as HTMLInputElement).value = response.id;
-        (document.getElementById('tollId') as HTMLInputElement).value = response.tollId;
-        (document.getElementById('tollName') as HTMLInputElement).value = response.tollName;
-        (document.getElementById('price') as HTMLInputElement).value = response.price;
-        (document.getElementById('emptyCharge') as HTMLIonToggleElement).checked = response.emptyCharge;
+        (document.getElementById('id') as HTMLInputElement).value = response.data.id;
+        (document.getElementById('tollId') as HTMLInputElement).value = response.data.tollId;
+        (document.getElementById('tollName') as HTMLInputElement).value = response.data.tollName;
+        (document.getElementById('price') as HTMLInputElement).value = response.data.price;
+        (document.getElementById('emptyCharge') as HTMLIonToggleElement).checked = response.data.emptyCharge;
         let concessionaireSelector = (document.getElementById('concessionaire') as HTMLIonSelectElement);
         let concessionaire = document.createElement('ion-select-option');
-        concessionaire.innerHTML = response.concessionaire.concessionaireId + ' | ' + response.concessionaire.concessionaireName;
-        concessionaire.value = response.concessionaire.id;
+        concessionaire.innerHTML = response.data.concessionaire.concessionaireId + ' | ' + response.data.concessionaire.concessionaireName;
+        concessionaire.value = response.data.concessionaire.id;
         concessionaireSelector.replaceChildren(concessionaire);
-        concessionaireSelector.value = response.concessionaire.id;
+        concessionaireSelector.value = response.data.concessionaire.id;
     })
 }
 
@@ -95,35 +94,33 @@ function saveToll(){
         let id = (document.getElementById('id') as HTMLInputElement).value;
         toll.setConcessionaire(parseInt((document.getElementById('concessionaire') as HTMLIonSelectElement).value));
         toll.setEmptyCharge((document.getElementById('emptyCharge') as HTMLIonToggleElement).checked);
-        toll.setPrice(parseFloat((document.getElementById('price') as HTMLInputElement).value.replace('R$','').replace(',','.')));
+        toll.setPrice(parseFloat((document.getElementById('price') as HTMLIonInputElement).value?.toString().replace('R$','')+''));
         toll.setTollId(parseInt((document.getElementById('tollId') as HTMLInputElement).value));
         toll.setTollName((document.getElementById('tollName') as HTMLInputElement).value);
         if(id == ''){
-            tollController.findToll(toll.getTollId()).then(function(response){
-                if(response.id === undefined){
-                    tollController.createToll(toll).then(function(response){
-                        (document.getElementById('id') as HTMLInputElement).value = response.id;
-                        findAllTolls();
-                        clearInputs();
-                        alert(response.tollName + ' com código ' + response.tollId + ' cadastrada com sucesso!');
-                    }).catch(function(response){
-                        if(response.status == HttpStatusCode.UnprocessableEntity){
-                          alert('Código de praça já cadastrado!');
-                        }
-                    });
+            tollController.createToll(toll).then(function(response){
+                if(response.status == 200){
+                    (document.getElementById('id') as HTMLInputElement).value = response.data.id;
+                    findAllTolls();
+                    clearInputs();
+                    alert(response.data.tollName + ' com código ' + response.data.tollId + ' cadastrada com sucesso!');
+                }else if(response.status == 422){
+                    alert("Código da Praça duplicado!");
                 }else{
-                    alert('Praça de código ' + response.tollId + ' já se encontra cadastrada!');
+                    alert("Erro inesperado!");
                 }
-            })
+            });
         }else{
             toll.setId(parseInt(id));
             tollController.updateToll(toll).then(function(response){
-                findAllTolls();
-                clearInputs();
-                alert('Praça de nome ' + response.tollName + ' com código ' + response.tollId + ' atualizada com sucesso!');
-            }).catch(function(response){
-                if(response.status == HttpStatusCode.UnprocessableEntity){
-                  alert('Código de praça já cadastrado!');
+                if(response.status == 200){
+                    findAllTolls();
+                    clearInputs();
+                    alert('Praça de nome ' + response.data.tollName + ' com código ' + response.data.tollId + ' atualizada com sucesso!');
+                }else if(response.status == 422){
+                    alert("Código da Praça duplicado!");
+                }else{
+                    alert("Erro inesperado!");
                 }
             });
         }
@@ -135,14 +132,14 @@ function saveToll(){
 function deleteToll(value:any){
     let tollId = parseInt(value.target.id);
     tollController.findToll(tollId).then(function(response){
-        let tollName = response.tollName;
-        toll.setId(response.id);
+        let tollName = response.data.tollName;
+        toll.setId(response.data.id);
         tollController.deleteToll(toll).then(function(){
             clearInputs();
             findAllTolls();
             alert('Praça de nome ' + tollName + ' com código ' + tollId + ' excluida com sucesso!');
-        })
-    })
+        });
+    });
 }
 
 function clearInputs(){

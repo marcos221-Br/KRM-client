@@ -42,10 +42,10 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import { setHeader } from './components/Json';
+import { HttpConection } from './components/Json';
 
 function setup(){
-  setHeader('Content-Type','application/json')
+  HttpConection.setHeader('Content-Type','application/json')
 }
 
 setupIonicReact();
